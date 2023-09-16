@@ -32,3 +32,9 @@ body {
   right: 0.5rem;
   top: 0;
 }
+
+.filters-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}

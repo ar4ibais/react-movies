@@ -6,16 +6,19 @@ import Search from "../components/Search";
 
 class Main extends Component {
     state = {
-        movies: []
+        movies: [],
+        str: 'matrix'
     }
     componentDidMount() {
-        fetch("http://www.omdbapi.com/?apikey=5dad9cc6&s=matrix")
+        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${this.state.str}`)
             .then(res => res.json())
             .then(data => this.setState({ movies: data.Search }))
     }
 
-    onSubmitSearch = (selector) => {
-        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}`)
+    onSubmitSearch = (selector = this.state.str, id = 'all') => {
+        this.setState({ str: selector })
+        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}${id !== 'all' ? `&type=${id}` : ''
+            }`)
             .then(res => res.json())
             .then(data => this.setState({ movies: data.Search }))
     }
@@ -24,7 +27,7 @@ class Main extends Component {
         const { movies } = this.state;
         return (
             <main className="content container">
-                <Search onSubmitSearch={this.onSubmitSearch} />
+                <Search onSubmitSearch={this.onSubmitSearch} defaultStr={this.state.str} />
                 {
                     movies.length ? (<Movies movies={this.state.movies} />) : <Preloader />
                 }

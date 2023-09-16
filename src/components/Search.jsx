@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 
 class Search extends Component {
-    state = {
-        search: ''
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: ''
+        }
     }
     render() {
+        const { onSubmitSearch } = this.props;
         return (
-            <div className="row">
+            <form
+                className="row"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    onSubmitSearch(this.state.search);
+                }}
+            >
                 <div className="input-field col s12">
                     <input
                         id="Search"
@@ -14,10 +24,11 @@ class Search extends Component {
                         className="validate"
                         placeholder="Search"
                         value={this.state.search}
-                        onChange={(e) => { this.setState({ search: e.target.value }) }}
+                        onChange={(e) => this.setState({ search: e.target.value })}
                     />
+                    <button type="sumbit" className="btn search-btn">Search</button>
                 </div>
-            </div>
+            </form>
         )
     }
 }

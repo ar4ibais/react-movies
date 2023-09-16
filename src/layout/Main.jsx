@@ -13,11 +13,18 @@ class Main extends Component {
             .then(res => res.json())
             .then(data => this.setState({ movies: data.Search }))
     }
+
+    onSubmitSearch = (selector) => {
+        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}`)
+            .then(res => res.json())
+            .then(data => this.setState({ movies: data.Search }))
+    }
+
     render() {
         const { movies } = this.state;
         return (
             <main className="content container">
-                <Search />
+                <Search onSubmitSearch={this.onSubmitSearch} />
                 {
                     movies.length ? (<Movies movies={this.state.movies} />) : <Preloader />
                 }

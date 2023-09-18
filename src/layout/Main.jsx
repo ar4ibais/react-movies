@@ -13,9 +13,13 @@ class Main extends Component {
         loading: true
     }
     componentDidMount() {
-        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${this.state.str}`)
+        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${this.state.str}`)
             .then(res => res.json())
             .then(data => this.setState({ movies: data.Search, loading: false }))
+            .catch(err => {
+                console.error(err);
+                this.setState({ loading: false })
+            })
     }
 
     onSubmitSearch = (selector = this.state.str, id = 'all') => {
@@ -23,10 +27,14 @@ class Main extends Component {
             str: selector,
             loading: true
         })
-        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}${id !== 'all' ? `&type=${id}` : ''
+        fetch(`https://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}${id !== 'all' ? `&type=${id}` : ''
             }`)
             .then(res => res.json())
             .then(data => this.setState({ movies: data.Search, loading: false }))
+            .catch(err => {
+                console.error(err);
+                this.setState({ loading: false })
+            })
     }
 
     render() {

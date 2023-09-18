@@ -4,32 +4,38 @@ import Movies from "../components/Movies";
 import Preloader from "../components/Preloader";
 import Search from "../components/Search";
 
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 class Main extends Component {
     state = {
         movies: [],
-        str: 'matrix'
+        str: 'matrix',
+        loading: true
     }
     componentDidMount() {
-        fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${this.state.str}`)
+        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${this.state.str}`)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search }))
+            .then(data => this.setState({ movies: data.Search, loading: false }))
     }
 
     onSubmitSearch = (selector = this.state.str, id = 'all') => {
-        this.setState({ str: selector })
+        this.setState({
+            str: selector,
+            loading: true
+        })
         fetch(`http://www.omdbapi.com/?apikey=5dad9cc6&s=${selector}${id !== 'all' ? `&type=${id}` : ''
             }`)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search }))
+            .then(data => this.setState({ movies: data.Search, loading: false }))
     }
 
     render() {
-        const { movies } = this.state;
+        const { movies, loading } = this.state;
         return (
             <main className="content container">
                 <Search onSubmitSearch={this.onSubmitSearch} defaultStr={this.state.str} />
                 {
-                    movies.length ? (<Movies movies={this.state.movies} />) : <Preloader />
+                    loading ? <Preloader /> : (<Movies movies={movies} />)
                 }
             </main>
         )

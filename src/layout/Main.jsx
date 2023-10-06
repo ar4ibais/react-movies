@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 
 import Movies from "../components/Movies";
 import Preloader from "../components/Preloader";
@@ -6,48 +6,48 @@ import Search from "../components/Search";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-class Main extends Component {
-    state = {
-        movies: [],
-        str: 'matrix',
-        loading: true
-    }
-    componentDidMount() {
-        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${this.state.str}`)
+const Main = () => {
+    const [movies, setMovies] = useState([]);
+    const [str, setStr] = useState('matrix');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${str}`)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search, loading: false }))
+            .then(data => {
+                setMovies(data.Search);
+                setLoading(false);
+            })
             .catch(err => {
                 console.error(err);
-                this.setState({ loading: false })
+                setLoading(false);
             })
-    }
+    }, [str]);
 
-    onSubmitSearch = (selector = this.state.str, id = 'all') => {
-        this.setState({
-            str: selector,
-            loading: true
-        })
+    const onSubmitSearch = (selector = str, id = 'all') => {
+        setStr(selector);
+        setLoading(true);
         fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${selector}${id !== 'all' ? `&type=${id}` : ''
             }`)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search, loading: false }))
+            .then(data => {
+                setMovies(data.Search);
+                setLoading(false);
+            })
             .catch(err => {
                 console.error(err);
-                this.setState({ loading: false })
+                setLoading(false);
             })
     }
 
-    render() {
-        const { movies, loading } = this.state;
-        return (
-            <main className="content container">
-                <Search onSubmitSearch={this.onSubmitSearch} defaultStr={this.state.str} />
-                {
-                    loading ? <Preloader /> : (<Movies movies={movies} />)
-                }
-            </main>
-        )
-    }
+    return (
+        <main className="content container">
+            <Search onSubmitSearch={onSubmitSearch} defaultStr={str} />
+            {
+                loading ? <Preloader /> : (<Movies movies={movies} />)
+            }
+        </main>
+    )
 }
 
 export default Main;
